@@ -1,5 +1,6 @@
 import subprocess
 import os
+import sys
 
 
 def create_shell_script(directory, script_name, shell_content):
@@ -13,7 +14,7 @@ def create_shell_script(directory, script_name, shell_content):
 
 
 def execute_shell_script(script_path):
-    subprocess.run([script_path], shell=True, check=True, timeout=5)
+    subprocess.run([script_path], shell=True, check=True, timeout=10)
 
 
 def push_files_in_directory(directory):
@@ -23,11 +24,13 @@ def push_files_in_directory(directory):
             shell_content = f'influx write -b "intern-bucket" -f "{file_path}" --precision s ' \
                             f'--header "#constant measurement,forecast" --header "#datatype string,tag,tag,tag,tag,tag,tag,' \
                             f'dateTime:number,tag,tag,double"'
-            script_name = f'push_{filename.replace(" ", "_").replace("(", "").replace(")", "").replace("°C", "Celsius").replace("%", "Percent").replace("W_m²", "W_Msquared").replace("°", "Degrees").replace(".csv","")}.sh'
-            script_directory = "scripts"  # Replace with your desired directory name
+            script_name = f'push_{filename.replace(" ", "_").replace("(", "").replace(")", "").replace("°C", "Celsius").replace("%", "Percent").replace("W_m²", "W_Msquared").replace("°", "Degrees").replace(".csv", "")}.sh'
+            script_directory = f'scripts_{longitude[:6]}_{latitude[:6]}'  # Replace with your desired directory name
             script_path = create_shell_script(script_directory, script_name, shell_content)
             execute_shell_script(script_path)
 
 
-directory_to_push = "openMeteoParameters"
+latitude = sys.argv[1]
+longitude = sys.argv[2]
+directory_to_push = f'openMeteoParameters_{longitude[:6]}_{latitude[:6]}'
 push_files_in_directory(directory_to_push)

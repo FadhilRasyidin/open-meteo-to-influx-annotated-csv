@@ -1,0 +1,49 @@
+version: "3.9"
+
+########################### NETWORKS
+networks:
+  default:
+    driver: bridge
+
+########################### SERVICES
+services:
+  # InfluxDB - Database for weather data
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb_2
+#    network_mode: 'host'
+    networks:
+      - default
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    ports:
+      - "8086:8086"
+    volumes:
+      - $DOCKERDIR/appdata/influxdb2/config:/etc/influxdb2
+      - $DOCKERDIR/appdata/influxdb2/db:/var/lib/influxdb2
+    env_file:
+      - ./influx2.env
+
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    networks:
+      - default
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    user: $PUID
+    links:
+      - influxdb:influxdb
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clock-panel
+    depends_on:
+      - influxdb
+    privileged: true
+volumes:
+  grafana-storage: {}

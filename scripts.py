@@ -14,7 +14,7 @@ def create_shell_script(directory, script_name, shell_content):
 
 
 def execute_shell_script(script_path):
-    subprocess.run([script_path], shell=True, check=True, timeout=10)
+    subprocess.run([script_path], shell=True, check=True, timeout=60)
 
 
 def push_files_in_directory(directory):
@@ -32,5 +32,5 @@ def push_files_in_directory(directory):
 
 latitude = sys.argv[1]
 longitude = sys.argv[2]
-directory_to_push = f'openMeteoParameters_{longitude[:6]}_{latitude[:6]}'
+directory_to_push = f'HistoricalParameters_{longitude[:6]}_{latitude[:6]}'
 push_files_in_directory(directory_to_push)

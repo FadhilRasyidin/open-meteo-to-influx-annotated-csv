@@ -1,0 +1,2 @@
+0 0 * * * root python3 /open-meteo-to-influx-annotated-csv/om_pre_process.py  >> /var/log/cron.log 2>&1
+2 0 * * * root python3 /open-meteo-to-influx-annotated-csv/scripts.py 22.714183 120.337895 >> /var/log/cron.log 2>&1
